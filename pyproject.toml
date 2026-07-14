@@ -33,6 +33,7 @@ cf-mcp-zero-trust = "cloudflare_mcp_zero_trust.cli:app"
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
+pythonpath = ["."]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/cloudflare_mcp_zero_trust"]

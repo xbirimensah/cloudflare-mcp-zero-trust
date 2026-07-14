@@ -1,0 +1,29 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        with:
+          version: "0.11.8"
+      - run: uv sync --extra dev --locked
+      - run: uv lock --check
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pyright
+      - run: uv export --format requirements-txt --all-extras --no-hashes --output-file /tmp/requirements.txt
+      - run: uv run pip-audit --requirement /tmp/requirements.txt --no-deps --disable-pip --progress-spinner off
+      - run: uv run pytest --cov=cloudflare_mcp_zero_trust --cov-report=term-missing --cov-fail-under=80
+      - run: uv run python -m compileall -q src tests examples
+      - run: uv build
+
