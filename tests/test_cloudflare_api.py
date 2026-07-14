@@ -61,7 +61,9 @@ def managed_client(handler) -> ManagedOAuthClient:
 
 def test_plan_is_redacted_and_validates_exact_email_policies() -> None:
     def handler(_request: httpx.Request) -> httpx.Response:
-        return httpx.Response(200, json={"success": True, "result": managed_application()})
+        return httpx.Response(
+            200, json={"success": True, "result": managed_application()}
+        )
 
     plan = managed_client(handler).plan("mcp.example.com")
 
@@ -83,7 +85,9 @@ def test_apply_preserves_application_and_adds_cli_and_https_callbacks() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         requests.append(request)
         if request.method == "GET":
-            return httpx.Response(200, json={"success": True, "result": managed_application()})
+            return httpx.Response(
+                200, json={"success": True, "result": managed_application()}
+            )
         payload = json.loads(request.content)
         assert payload["name"] == "Example MCP"
         assert payload["custom_deny_url"] == "https://example.com/denied"

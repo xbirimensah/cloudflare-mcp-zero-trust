@@ -38,7 +38,9 @@ def managed_environment(**overrides: str) -> dict[str, str]:
 
 def test_settings_are_all_or_nothing_and_reject_unsafe_team_origins() -> None:
     assert ManagedOAuthSettings.from_environ({}) is None
-    assert ManagedOAuthSettings.from_environ({"CF_MCP_PUBLIC_HOST": PUBLIC_HOST}) is None
+    assert (
+        ManagedOAuthSettings.from_environ({"CF_MCP_PUBLIC_HOST": PUBLIC_HOST}) is None
+    )
 
     with pytest.raises(ManagedOAuthError, match="Incomplete Managed OAuth"):
         ManagedOAuthSettings.from_environ({"CF_MCP_TEAM_DOMAIN": TEAM_DOMAIN})
@@ -155,7 +157,9 @@ def test_public_host_rejects_wrong_audience_issuer_identity_or_token_type(
 
     response = client.get(
         f"https://{PUBLIC_HOST}/mcp",
-        headers={"Cf-Access-Jwt-Assertion": _signed_token(private_key, **{claim: value})},
+        headers={
+            "Cf-Access-Jwt-Assertion": _signed_token(private_key, **{claim: value})
+        },
     )
 
     assert response.status_code == 403
